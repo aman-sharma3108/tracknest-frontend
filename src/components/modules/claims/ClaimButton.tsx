@@ -22,6 +22,7 @@ interface ClaimButtonProps {
 export function ClaimButton({ foundItemId, itemTitle }: ClaimButtonProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [claimed, setClaimed] = useState(false);
 
   const form = useForm({
     defaultValues: { message: "" },
@@ -44,12 +45,21 @@ export function ClaimButton({ foundItemId, itemTitle }: ClaimButtonProps) {
           id: toastId,
         });
         setOpen(false);
+        setClaimed(true);
         router.refresh();
       } catch {
         toast.error("Something went wrong.", { id: toastId });
       }
     },
   });
+
+  if (claimed) {
+    return (
+      <Button variant="outline" disabled className="w-full sm:w-auto">
+        Claim Submitted
+      </Button>
+    );
+  }
 
   if (!open) {
     return (
