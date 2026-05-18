@@ -39,7 +39,8 @@ export function ApprovedClaimsTable({ claims, foundItemsMap, usersMap }: Props) 
       }
 
       // Mark the found item as RETURNED in the DB
-      await updateFoundItemStatus(claim.foundItemId, FoundItemStatus.RETURNED);
+      const statusRes = await updateFoundItemStatus(claim.foundItemId, FoundItemStatus.RETURNED);
+      console.log("[handover] updateFoundItemStatus:", claim.foundItemId, statusRes);
 
       toast.success("Handover recorded successfully", { id: toastId });
       setRemaining((prev) => prev.filter((c) => c.id !== claim.id));
