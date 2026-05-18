@@ -23,8 +23,16 @@ export default async function AdminHandoversPage() {
     (usersRes.data?.items ?? []).map((u) => [u.id, u])
   );
 
+  // Deduplicate handovers — keep only the latest per foundItem (sorted desc already)
+  const seenFoundItems = new Set<string>();
+  const uniqueHandovers = (data?.items ?? []).filter((h) => {
+    if (seenFoundItems.has(h.foundItem)) return false;
+    seenFoundItems.add(h.foundItem);
+    return true;
+  });
+
   // Build a set of foundItem IDs that already have a recorded handover
-  const handoveredItemIds = new Set((data?.items ?? []).map((h) => h.foundItem));
+  const handoveredItemIds = seenFoundItems;
 
   // Only show approved claims where:
   // 1. The found item exists and is not yet RETURNED
@@ -72,13 +80,13 @@ export default async function AdminHandoversPage() {
           </div>
         )}
 
-        {data && data.items.length === 0 && (
+        {uniqueHandovers.length === 0 && !error && (
           <div className="rounded-2xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
             No handovers recorded yet.
           </div>
         )}
 
-        {data && data.items.length > 0 && (
+        {uniqueHandovers.length > 0 && (
           <div className="rounded-2xl border border-border overflow-hidden">
             <table className="w-full text-sm">
               <thead>
@@ -91,7 +99,7 @@ export default async function AdminHandoversPage() {
                 </tr>
               </thead>
               <tbody>
-                {data.items.map((h, i) => (
+                {uniqueHandovers.map((h, i) => (
                   <tr key={h.id} className={`border-b border-border last:border-0 ${i % 2 === 0 ? "" : "bg-muted/20"}`}>
                     <td className="px-4 py-3 font-medium">
                       {foundItemsMap[h.foundItem]?.title ?? h.foundItem}
