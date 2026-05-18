@@ -35,10 +35,12 @@ export function ItemDetail({
   item,
   role,
   userId,
+  existingClaimId,
 }: {
   item: ILostItem | IFoundItem;
   role?: string;
   userId?: string;
+  existingClaimId?: string;
 }) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -327,7 +329,15 @@ export function ItemDetail({
 
         {/* Found item — claim button for regular users */}
         {!lost && role === "NORMAL_USER" && !isOwner && item.status === FoundItemStatus.REPORTED && (
-          <ClaimButton foundItemId={item.id} itemTitle={item.title} />
+          existingClaimId ? (
+            <Button asChild variant="outline">
+              <Link href={`/dashboard/my-claims/${existingClaimId}`}>
+                View My Claim
+              </Link>
+            </Button>
+          ) : (
+            <ClaimButton foundItemId={item.id} itemTitle={item.title} />
+          )
         )}
 
         {/* Found item status transitions for admin/staff */}

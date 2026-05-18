@@ -1,8 +1,12 @@
 import { ItemDetail } from "@/components/modules/items/ItemDetail";
 import { itemService } from "@/services/item.service";
+import { claimService } from "@/services/claim.service";
 import { userService } from "@/services/user.service";
+import { ClaimStatus } from "@/types/claim.interface";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+
+export const dynamic = "force-dynamic";
 
 export default async function ItemViewPage({
   params,
@@ -11,9 +15,10 @@ export default async function ItemViewPage({
 }) {
   const { id } = await params;
 
-  const [result, sessionResult] = await Promise.all([
+  const [result, sessionResult, claimsResult] = await Promise.all([
     itemService.getItemById(id),
     userService.getSession(),
+    claimService.getMyClaims(),
   ]);
 
   if (!result.data) {
@@ -24,10 +29,17 @@ export default async function ItemViewPage({
   const role = sessionResult.data?.user?.role as string | undefined;
   const userId = sessionResult.data?.user?.id as string | undefined;
 
+  // Check if this user already has an active claim on this found item
+  const existingClaim = claimsResult.data?.items?.find(
+    (c) =>
+      c.foundItemId === id &&
+      c.status !== ClaimStatus.CANCELED
+  );
+
   return (
     <div className="flex flex-col gap-6">
       <Breadcrumb title={item.title} />
-      <ItemDetail item={item} role={role} userId={userId} />
+      <ItemDetail item={item} role={role} userId={userId} existingClaimId={existingClaim?.id} />
     </div>
   );
 }
