@@ -33,6 +33,7 @@ export const claimService = {
       });
 
       const data = await res.json();
+      console.log("[createClaim] status:", res.status, "body:", JSON.stringify(data));
 
       if (!res.ok) {
         const msg = Array.isArray(data?.message)
