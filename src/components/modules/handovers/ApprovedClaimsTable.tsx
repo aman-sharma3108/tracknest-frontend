@@ -1,10 +1,9 @@
 "use client";
 
 import { createHandover } from "@/actions/admin.action";
-import { updateFoundItemStatus } from "@/actions/items.action";
 import { Button } from "@/components/ui/button";
 import { IClaim } from "@/types/claim.interface";
-import { FoundItemStatus, IFoundItem } from "@/types/item.interface";
+import { IFoundItem } from "@/types/item.interface";
 import { IUser } from "@/types/user.interface";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -38,13 +37,7 @@ export function ApprovedClaimsTable({ claims, foundItemsMap, usersMap }: Props) 
         return;
       }
 
-      // Mark the found item as RETURNED in the DB
-      const statusRes = await updateFoundItemStatus(claim.foundItemId, FoundItemStatus.RETURNED);
-      if (statusRes.error) {
-        toast.warning(`Handover recorded, but item status update failed: ${statusRes.error.message}`, { id: toastId });
-      } else {
-        toast.success("Handover recorded successfully", { id: toastId });
-      }
+      toast.success("Handover recorded successfully", { id: toastId });
       setRemaining((prev) => prev.filter((c) => c.id !== claim.id));
       setShowNoteFor(null);
       router.refresh();
