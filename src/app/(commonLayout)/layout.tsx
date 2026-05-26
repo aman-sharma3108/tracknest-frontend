@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 import { userService } from "@/services/user.service";
 
 export const dynamic = "force-dynamic";
@@ -19,9 +20,10 @@ export default async function CommonLayout({
     : undefined;
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="flex min-h-screen flex-col bg-background text-foreground">
       <Navbar isLoggedIn={isLoggedIn} userName={userName} />
-      <main>{children}</main>
+      <main className="flex-1">{children}</main>
+      <Footer />
     </div>
   );
 }
