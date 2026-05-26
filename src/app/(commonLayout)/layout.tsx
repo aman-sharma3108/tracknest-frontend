@@ -10,11 +10,17 @@ export default async function CommonLayout({
   children: ReactNode;
 }) {
   const { data } = await userService.getSession();
-  const isLoggedIn = !!data?.user;
+
+  const user = data?.user;
+  const isLoggedIn = !!user;
+
+  const userName = user
+    ? `${user.firstName ?? ""} ${user.lastName ?? ""}`.trim()
+    : undefined;
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <Navbar isLoggedIn={isLoggedIn} />
+      <Navbar isLoggedIn={isLoggedIn} userName={userName} />
       <main>{children}</main>
     </div>
   );

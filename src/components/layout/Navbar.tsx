@@ -4,9 +4,10 @@ import SignOutButton from "./SignOutButton";
 
 interface NavbarProps {
   isLoggedIn: boolean;
+  userName?: string;
 }
 
-export default function Navbar({ isLoggedIn }: NavbarProps) {
+export default function Navbar({ isLoggedIn, userName }: NavbarProps) {
   return (
     <header className="sticky top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -26,12 +27,14 @@ export default function Navbar({ isLoggedIn }: NavbarProps) {
           >
             Home
           </Link>
+
           <Link
             href="/about"
             className="text-sm font-medium text-muted-foreground transition hover:text-foreground"
           >
             About
           </Link>
+
           {isLoggedIn && (
             <Link
               href="/dashboard"
@@ -46,7 +49,20 @@ export default function Navbar({ isLoggedIn }: NavbarProps) {
           <ModeToggle />
 
           {isLoggedIn ? (
-            <SignOutButton />
+            <>
+              {userName && (
+                <div className="hidden items-center gap-2 rounded-xl border border-border bg-card px-4 py-2 shadow-sm sm:flex">
+                  <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground">
+                    {userName.charAt(0).toUpperCase()}
+                  </div>
+                  <span className="max-w-32 truncate text-sm font-medium text-foreground">
+                    {userName}
+                  </span>
+                </div>
+              )}
+
+              <SignOutButton />
+            </>
           ) : (
             <>
               <Link
@@ -55,6 +71,7 @@ export default function Navbar({ isLoggedIn }: NavbarProps) {
               >
                 Login
               </Link>
+
               <Link
                 href="/register"
                 className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
