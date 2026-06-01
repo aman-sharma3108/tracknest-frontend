@@ -1,12 +1,9 @@
 import { IRoute } from "@/types";
 
-/** Sidebar routes for Staff (panelType: "STAFF") */
 export const staffRoutes: IRoute[] = [
   {
     title: "Overview",
-    items: [
-      { title: "Dashboard", url: "/dashboard" },
-    ],
+    items: [{ title: "Dashboard", url: "/dashboard" }],
   },
   {
     title: "Management",
@@ -19,14 +16,13 @@ export const staffRoutes: IRoute[] = [
   {
     title: "Lost & Found",
     items: [
+      { title: "AI Matching Assistant", url: "/dashboard/ai-matching" },
       { title: "Claims Review", url: "/dashboard/claims" },
       { title: "Handovers", url: "/dashboard/handovers" },
     ],
   },
   {
     title: "Account",
-    items: [
-      { title: "Edit Profile", url: "/dashboard/profile" },
-    ],
+    items: [{ title: "Edit Profile", url: "/dashboard/profile" }],
   },
 ];
