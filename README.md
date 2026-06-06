@@ -61,7 +61,6 @@ Run MongoDB<br>
 
 Ensure MongoDB service is running locally before starting the backend server.
 
-# Screenshots
 
 # Team Info
 
