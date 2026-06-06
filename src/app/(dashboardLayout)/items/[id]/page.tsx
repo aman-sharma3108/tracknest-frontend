@@ -8,6 +8,11 @@ import { notFound } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
+const ACTIVE_CLAIM_STATUSES = new Set([
+  ClaimStatus.PENDING,
+  ClaimStatus.UNDER_REVIEW,
+]);
+
 export default async function ItemViewPage({
   params,
 }: {
@@ -31,7 +36,7 @@ export default async function ItemViewPage({
 
   // Check if this user already has an active claim on this found item
   const existingClaim = claimsResult.data?.items?.find(
-    (c) => c.foundItemId === id && c.status !== ClaimStatus.CANCELED,
+    (c) => c.foundItemId === id && ACTIVE_CLAIM_STATUSES.has(c.status),
   );
 
   // For normal users, fetch their lost items so they can link a claim to one

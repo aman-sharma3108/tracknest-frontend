@@ -4,15 +4,19 @@ import { createClaim } from "@/actions/claims.action";
 import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { useForm } from "@tanstack/react-form";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { toast } from "sonner";
 import * as z from "zod";
 
 const schema = z.object({
-  lostItemId: z.string().min(1, "Please select which of your lost items this is"),
-  message: z.string().min(10, "Please describe why this item is yours (min 10 chars)"),
+  lostItemId: z
+    .string()
+    .min(1, "Please select which of your lost items this is"),
+  message: z
+    .string()
+    .min(10, "Please describe why this item is yours (min 10 chars)"),
 });
 
 interface ClaimButtonProps {
@@ -21,25 +25,14 @@ interface ClaimButtonProps {
   myLostItems?: { id: string; title: string }[];
 }
 
-const STORAGE_KEY = "claimed_items";
-
-function getClaimedItems(): string[] {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "[]"); } catch { return []; }
-}
-
-function markItemClaimed(id: string) {
-  const items = getClaimedItems();
-  if (!items.includes(id)) localStorage.setItem(STORAGE_KEY, JSON.stringify([...items, id]));
-}
-
-export function ClaimButton({ foundItemId, itemTitle, myLostItems = [] }: ClaimButtonProps) {
+export function ClaimButton({
+  foundItemId,
+  itemTitle,
+  myLostItems = [],
+}: ClaimButtonProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [claimed, setClaimed] = useState(false);
-
-  useEffect(() => {
-    setClaimed(getClaimedItems().includes(foundItemId));
-  }, [foundItemId]);
+  const [submitted, setSubmitted] = useState(false);
 
   const form = useForm({
     defaultValues: { lostItemId: "", message: "" },
@@ -59,10 +52,11 @@ export function ClaimButton({ foundItemId, itemTitle, myLostItems = [] }: ClaimB
           return;
         }
 
-        toast.success("Claim submitted! You'll be notified of updates.", { id: toastId });
+        toast.success("Claim submitted! You'll be notified of updates.", {
+          id: toastId,
+        });
         setOpen(false);
-        setClaimed(true);
-        markItemClaimed(foundItemId);
+        setSubmitted(true);
         router.refresh();
       } catch {
         toast.error("Something went wrong.", { id: toastId });
@@ -70,7 +64,7 @@ export function ClaimButton({ foundItemId, itemTitle, myLostItems = [] }: ClaimB
     },
   });
 
-  if (claimed) {
+  if (submitted) {
     return (
       <Button variant="outline" disabled className="w-full sm:w-auto">
         Claim Submitted
@@ -85,7 +79,10 @@ export function ClaimButton({ foundItemId, itemTitle, myLostItems = [] }: ClaimB
         <p className="font-medium">Lost item report required</p>
         <p className="mt-1 text-xs">
           To claim a found item you must first{" "}
-          <Link href="/dashboard/report-lost" className="underline underline-offset-2 font-semibold">
+          <Link
+            href="/dashboard/report-lost"
+            className="underline underline-offset-2 font-semibold"
+          >
             report your item as lost
           </Link>
           . This helps staff verify ownership.
@@ -108,7 +105,8 @@ export function ClaimButton({ foundItemId, itemTitle, myLostItems = [] }: ClaimB
         Claim: {itemTitle}
       </h3>
       <p className="mb-4 text-sm text-muted-foreground">
-        Select your lost item report and explain why this is yours. Staff will cross-check your report.
+        Select your lost item report and explain why this is yours. Staff will
+        cross-check your report.
       </p>
 
       <form
@@ -122,10 +120,13 @@ export function ClaimButton({ foundItemId, itemTitle, myLostItems = [] }: ClaimB
           {/* Lost item selector */}
           <form.Field name="lostItemId">
             {(field) => {
-              const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
+              const isInvalid =
+                field.state.meta.isTouched && !field.state.meta.isValid;
               return (
                 <Field data-invalid={isInvalid}>
-                  <FieldLabel htmlFor={field.name}>Your lost item report *</FieldLabel>
+                  <FieldLabel htmlFor={field.name}>
+                    Your lost item report *
+                  </FieldLabel>
                   <select
                     id={field.name}
                     value={field.state.value}
@@ -142,7 +143,11 @@ export function ClaimButton({ foundItemId, itemTitle, myLostItems = [] }: ClaimB
                   {isInvalid && (
                     <p className="text-xs text-destructive mt-1">
                       {field.state.meta.errors
-                        .map((e) => typeof e === "string" ? e : (e as { message?: string })?.message)
+                        .map((e) =>
+                          typeof e === "string"
+                            ? e
+                            : (e as { message?: string })?.message,
+                        )
                         .filter(Boolean)
                         .join(", ")}
                     </p>
@@ -155,10 +160,13 @@ export function ClaimButton({ foundItemId, itemTitle, myLostItems = [] }: ClaimB
           {/* Message */}
           <form.Field name="message">
             {(field) => {
-              const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
+              const isInvalid =
+                field.state.meta.isTouched && !field.state.meta.isValid;
               return (
                 <Field data-invalid={isInvalid}>
-                  <FieldLabel htmlFor={field.name}>Why is this yours? *</FieldLabel>
+                  <FieldLabel htmlFor={field.name}>
+                    Why is this yours? *
+                  </FieldLabel>
                   <textarea
                     id={field.name}
                     value={field.state.value}
@@ -170,7 +178,11 @@ export function ClaimButton({ foundItemId, itemTitle, myLostItems = [] }: ClaimB
                   {isInvalid && (
                     <p className="text-xs text-destructive mt-1">
                       {field.state.meta.errors
-                        .map((e) => typeof e === "string" ? e : (e as { message?: string })?.message)
+                        .map((e) =>
+                          typeof e === "string"
+                            ? e
+                            : (e as { message?: string })?.message,
+                        )
                         .filter(Boolean)
                         .join(", ")}
                     </p>
