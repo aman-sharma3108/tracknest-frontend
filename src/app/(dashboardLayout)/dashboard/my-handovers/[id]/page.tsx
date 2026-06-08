@@ -2,6 +2,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { handoverService } from "@/services/handover.service";
+import { itemService } from "@/services/item.service";
+import { userService } from "@/services/user.service";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -23,6 +25,26 @@ export default async function HandoverDetailPage({
       </div>
     );
   }
+
+  // Resolve IDs into readable names and titles for display
+  const [foundRes, usersRes] = await Promise.all([
+    itemService.getFoundItemById(handover.foundItem),
+    userService.getAllUsers(),
+  ]);
+
+  const itemTitle = foundRes.data?.title ?? "Unknown item";
+
+  const usersMap: Record<string, string> = Object.fromEntries(
+    (usersRes.data?.items ?? []).map(
+      (u: { id: string; firstName: string; lastName?: string }) => [
+        u.id,
+        `${u.firstName}${u.lastName ? ` ${u.lastName}` : ""}`,
+      ]
+    )
+  );
+
+  const receiverName = usersMap[handover.receivedByUser] ?? "Unknown recipient";
+  const staffName = usersMap[handover.handedOverBy] ?? "Staff member";
 
   return (
     <div className="space-y-6 max-w-2xl">
@@ -73,34 +95,26 @@ export default async function HandoverDetailPage({
           )}
 
           {/* Meta */}
-          <div className="grid gap-2 pt-2 border-t border-border">
-            <div className="flex gap-2 text-xs">
-              <span className="text-muted-foreground w-32 shrink-0">Handover ID</span>
-              <span className="font-mono text-foreground break-all">{handover.id}</span>
-            </div>
-            <div className="flex gap-2 text-xs">
-              <span className="text-muted-foreground w-32 shrink-0">Found Item</span>
+          <div className="grid gap-3 pt-2 border-t border-border">
+            <div className="flex gap-2 text-sm">
+              <span className="text-muted-foreground w-32 shrink-0">Item</span>
               <Link
                 href={`/items/${handover.foundItem}`}
-                className="font-mono text-primary hover:underline break-all"
+                className="font-medium text-primary hover:underline"
               >
-                {handover.foundItem}
+                {itemTitle}
               </Link>
             </div>
-            <div className="flex gap-2 text-xs">
-              <span className="text-muted-foreground w-32 shrink-0">Received By</span>
-              <span className="font-mono text-foreground break-all">
-                {handover.receivedByUser}
-              </span>
+            <div className="flex gap-2 text-sm">
+              <span className="text-muted-foreground w-32 shrink-0">Received by</span>
+              <span className="text-foreground">{receiverName}</span>
             </div>
-            <div className="flex gap-2 text-xs">
-              <span className="text-muted-foreground w-32 shrink-0">Handed Over By</span>
-              <span className="font-mono text-foreground break-all">
-                {handover.handedOverBy}
-              </span>
+            <div className="flex gap-2 text-sm">
+              <span className="text-muted-foreground w-32 shrink-0">Handed over by</span>
+              <span className="text-foreground">{staffName}</span>
             </div>
-            <div className="flex gap-2 text-xs">
-              <span className="text-muted-foreground w-32 shrink-0">Date &amp; Time</span>
+            <div className="flex gap-2 text-sm">
+              <span className="text-muted-foreground w-32 shrink-0">Date &amp; time</span>
               <span className="text-foreground">
                 {new Date(handover.handedOverAt).toLocaleString("en-AU", {
                   day: "numeric",
@@ -111,18 +125,6 @@ export default async function HandoverDetailPage({
                 })}
               </span>
             </div>
-            {handover.createdAt && (
-              <div className="flex gap-2 text-xs">
-                <span className="text-muted-foreground w-32 shrink-0">Created</span>
-                <span className="text-foreground">
-                  {new Date(handover.createdAt).toLocaleDateString("en-AU", {
-                    day: "numeric",
-                    month: "short",
-                    year: "numeric",
-                  })}
-                </span>
-              </div>
-            )}
           </div>
         </CardContent>
       </Card>

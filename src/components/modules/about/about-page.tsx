@@ -31,9 +31,9 @@ const features = [
     icon: ClipboardCheck,
   },
   {
-    title: "Smart Matching",
+    title: "AI Matching",
     description:
-      "The system supports matching by comparing item category, color, brand, location, date, and description similarity using a weighted scoring engine.",
+      "An AI engine compares lost and found reports using semantic embeddings of their descriptions, images, and details to surface the most likely matches.",
     icon: Target,
   },
   {
@@ -325,7 +325,7 @@ export default function AboutPage() {
               <p className="mt-3 text-sm leading-7 text-muted-foreground">
                 This project demonstrates authentication, role-based dashboards,
                 CRUD operations, claim workflows, admin review, handover
-                tracking, API integration, and rule-based matching concepts.
+                tracking, API integration, and AI matching concepts.
               </p>
             </div>
           </div>
@@ -357,16 +357,16 @@ export default function AboutPage() {
           <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
             <div>
               <p className="text-sm font-medium text-primary">
-                Rule-Based Support
+                AI-Powered Support
               </p>
               <h2 className="mt-2 text-3xl font-bold tracking-tight">
                 Matching support without replacing human judgement
               </h2>
               <p className="mt-4 text-base leading-8 text-muted-foreground">
-                TrackNest includes a smart matching section that helps compare
-                lost and found item reports. It uses transparent matching
-                signals such as category, color, brand, location, date, title,
-                and description similarity. This helps users and staff find
+                TrackNest includes an AI matching engine that compares lost and
+                found item reports using semantic embeddings of their
+                descriptions, images, and details. It surfaces the found items
+                most likely to match a lost report, helping users and staff find
                 possible matches faster.
               </p>
 
@@ -381,7 +381,7 @@ export default function AboutPage() {
               <div className="mb-5 flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground">
-                    Smart Matching Assistant
+                    AI Matching Assistant
                   </p>
                   <h3 className="text-xl font-semibold">Possible Match Score</h3>
                 </div>

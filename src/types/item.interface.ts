@@ -70,6 +70,23 @@ export interface IFoundItem {
   updatedAt?: string;
 }
 
+// ─── AI Matching ──────────────────────────────────────────────────────────────
+
+/** A single AI-suggested found-item match for a given lost report.
+ *  Mirrors the backend AIMatchResponseDto (Gemini embedding + cosine similarity). */
+export interface IAIMatch {
+  foundItemId: string;
+  title: string;
+  description: string;
+  category: string;
+  brand?: string;
+  color?: string;
+  locationFound?: string;
+  dateFound: string; // ISO 8601 date string
+  images: string[];
+  score: number; // 0–100 similarity score
+}
+
 // ─── Shared ───────────────────────────────────────────────────────────────────
 
 export interface IPagination {

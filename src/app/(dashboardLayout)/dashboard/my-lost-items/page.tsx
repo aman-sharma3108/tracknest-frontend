@@ -2,7 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { itemService } from "@/services/item.service";
 import { LostItemStatus } from "@/types/item.interface";
-import { PencilIcon } from "lucide-react";
+import { PencilIcon, Sparkles } from "lucide-react";
 import Link from "next/link";
 
 const statusVariant: Record<
@@ -96,6 +96,15 @@ export default async function MyLostItemsPage() {
                     {item.locationLost}
                   </p>
                 )}
+              </Link>
+
+              {/* AI matches */}
+              <Link
+                href={`/dashboard/my-lost-items/${item.id}/matches`}
+                className="mt-4 inline-flex w-full items-center justify-center gap-1.5 rounded-xl border border-primary/30 bg-primary/5 px-3 py-2 text-xs font-medium text-primary transition hover:bg-primary/10"
+              >
+                <Sparkles className="h-3.5 w-3.5" />
+                View AI Matches
               </Link>
             </div>
           ))}

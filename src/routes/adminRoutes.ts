@@ -19,7 +19,6 @@ export const adminRoutes: IRoute[] = [
     title: "Lost & Found",
     items: [
       { title: "All Items", url: "/items" },
-      { title: "Smart Matching", url: "/dashboard/matching" },
       { title: "Claims Review", url: "/dashboard/claims" },
       { title: "Handovers", url: "/dashboard/handovers" },
     ],

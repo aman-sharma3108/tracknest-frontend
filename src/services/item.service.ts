@@ -3,6 +3,7 @@ import "server-only";
 import { env } from "@/env";
 import {
   CustodyType,
+  IAIMatch,
   IFoundItem,
   ILostItem,
   IPaginatedResponse,
@@ -146,6 +147,35 @@ export const itemService = {
       }
 
       return { data: data as ILostItem, error: null };
+    } catch {
+      return { data: null, error: { message: "Something Went Wrong" } };
+    }
+  },
+
+  // ─── AI Matching (Gemini embeddings) ─────────────────────────────────────────
+
+  getLostItemAIMatches: async (
+    id: string
+  ): Promise<{ data: IAIMatch[] | null; error: { message: string } | null }> => {
+    try {
+      const token = await getBearerToken();
+
+      const res = await fetch(`${API_URL}/lost-items/${id}/ai-matches`, {
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}` },
+        cache: "no-store",
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        return {
+          data: null,
+          error: { message: data?.message ?? "Could not fetch AI matches." },
+        };
+      }
+
+      return { data: data as IAIMatch[], error: null };
     } catch {
       return { data: null, error: { message: "Something Went Wrong" } };
     }

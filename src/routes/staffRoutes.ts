@@ -17,7 +17,6 @@ export const staffRoutes: IRoute[] = [
   {
     title: "Lost & Found",
     items: [
-      { title: "Smart Matching", url: "/dashboard/matching" },
       { title: "Claims Review", url: "/dashboard/claims" },
       { title: "Handovers", url: "/dashboard/handovers" },
     ],

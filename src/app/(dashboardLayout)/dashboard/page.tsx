@@ -16,7 +16,6 @@ import {
   BarChart3,
   ShieldAlert,
   Eye,
-  Target,
 } from "lucide-react";
 
 // ─── Shared stat card ────────────────────────────────────────────────────────
@@ -139,12 +138,6 @@ async function AdminDashboard({ name }: { name: string }) {
         </h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <ActionCard
-            title="Smart Matching"
-            description="Compare lost and found reports using weighted match scoring"
-            href="/dashboard/matching"
-            icon={Target}
-          />
-          <ActionCard
             title="Manage Users"
             description="View, ban, or update user accounts"
             href="/dashboard/users"
@@ -229,12 +222,6 @@ async function StaffDashboard({ name }: { name: string }) {
           Quick Actions
         </h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <ActionCard
-            title="Smart Matching"
-            description="Review suggested matches between lost and found reports"
-            href="/dashboard/matching"
-            icon={Target}
-          />
           <ActionCard
             title="Manage Users"
             description="View and manage user accounts"
