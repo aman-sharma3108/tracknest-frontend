@@ -1,5 +1,8 @@
 import { userService } from "@/services/user.service";
 import { itemService } from "@/services/item.service";
+import { claimService } from "@/services/claim.service";
+import { handoverService } from "@/services/handover.service";
+import { ClaimStatus } from "@/types/claim.interface";
 import { redirect } from "next/navigation";
 import { RolesEnum } from "@/constants/role";
 import Link from "next/link";
@@ -8,7 +11,7 @@ import {
   PackageSearch,
   PackageCheck,
   FileText,
-  FolderOpen,
+  CheckCircle2,
   ClipboardList,
   PlusCircle,
   SearchCheck,
@@ -80,16 +83,22 @@ function ActionCard({
 // ─── Role dashboards ──────────────────────────────────────────────────────────
 
 async function AdminDashboard({ name }: { name: string }) {
-  const [lostRes, foundRes] = await Promise.all([
+  const [lostRes, foundRes, claimsRes, handoversRes] = await Promise.all([
     itemService.getAllLostItems(),
     itemService.getAllFoundItems(),
+    claimService.adminGetAllClaims(),
+    handoverService.adminGetAllHandovers(),
   ]);
 
   const totalLost = lostRes.data?.pagination?.total ?? 0;
   const totalFound = foundRes.data?.pagination?.total ?? 0;
-  const openClaims =
-    lostRes.data?.items?.filter((i) => i.status === "CLAIM_REQUESTED").length ??
-    0;
+  const pendingClaims =
+    claimsRes.data?.items?.filter(
+      (c) =>
+        c.status === ClaimStatus.PENDING ||
+        c.status === ClaimStatus.UNDER_REVIEW
+    ).length ?? 0;
+  const itemsReturned = handoversRes.data?.pagination?.total ?? 0;
 
   return (
     <div className="space-y-8">
@@ -117,16 +126,16 @@ async function AdminDashboard({ name }: { name: string }) {
           sub="All time"
         />
         <StatCard
-          label="Open Claims"
-          value={openClaims}
+          label="Pending Claims"
+          value={pendingClaims}
           icon={ClipboardList}
           sub="Awaiting review"
         />
         <StatCard
-          label="Active Items"
-          value={totalLost + totalFound}
-          icon={FolderOpen}
-          sub="Combined"
+          label="Items Returned"
+          value={itemsReturned}
+          icon={CheckCircle2}
+          sub="Handed over to owners"
         />
       </div>
 
@@ -173,16 +182,20 @@ async function AdminDashboard({ name }: { name: string }) {
 }
 
 async function StaffDashboard({ name }: { name: string }) {
-  const [lostRes, foundRes] = await Promise.all([
+  const [lostRes, foundRes, claimsRes] = await Promise.all([
     itemService.getAllLostItems(),
     itemService.getAllFoundItems(),
+    claimService.adminGetAllClaims(),
   ]);
 
   const totalLost = lostRes.data?.pagination?.total ?? 0;
   const totalFound = foundRes.data?.pagination?.total ?? 0;
-  const openClaims =
-    lostRes.data?.items?.filter((i) => i.status === "CLAIM_REQUESTED").length ??
-    0;
+  const pendingClaims =
+    claimsRes.data?.items?.filter(
+      (c) =>
+        c.status === ClaimStatus.PENDING ||
+        c.status === ClaimStatus.UNDER_REVIEW
+    ).length ?? 0;
 
   return (
     <div className="space-y-8">
@@ -204,7 +217,7 @@ async function StaffDashboard({ name }: { name: string }) {
         />
         <StatCard
           label="Pending Claims"
-          value={openClaims}
+          value={pendingClaims}
           icon={ClipboardList}
           sub="Needs action"
         />

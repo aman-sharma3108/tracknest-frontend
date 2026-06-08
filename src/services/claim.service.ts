@@ -128,7 +128,7 @@ export const claimService = {
       const token = await getBearerToken();
 
       const res = await fetch(
-        `${API_URL}/admin/claims?sortBy=createdAt&sort=desc`,
+        `${API_URL}/admin/claims?sortBy=createdAt&sort=desc&pageSize=200`,
         {
           headers: { Authorization: `Bearer ${token}` },
           cache: "no-store",
